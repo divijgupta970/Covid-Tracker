@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#473F97</color>
+    <color name="colorPrimaryDark">#473F97</color>
+    <color name="colorAccent">#FF5959</color>
+    <color name="yellow">#FFB259</color>
+    <color name="green">#4CD97B</color>
+    <color name="purple">#9059FF</color>
+    <color name="textOnBackground">#ffffff</color>
+    <color name="textBlack">#0D1333</color>
+    <color name="white">#ffffff</color>
+    <color name="chip_bg_purple">#6C65AC</color>
+    <color name="blue">#4DB5FF</color>
+
+</resources>

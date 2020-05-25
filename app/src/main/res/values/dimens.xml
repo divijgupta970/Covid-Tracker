@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_sides">24dp</dimen>
+    <dimen name="white_bg_corner_radius">40dp</dimen>
+    <dimen name="card_corner_radius">8dp</dimen>
+    <dimen name="tab_bg_margin">4dp</dimen>
+</resources>

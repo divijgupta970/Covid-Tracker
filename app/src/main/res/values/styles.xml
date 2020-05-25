@@ -1,0 +1,45 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="HeaderText">
+        <item name="android:textColor">@color/textOnBackground</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/graphik_family</item>
+        <item name="android:textFontWeight">600</item>
+    </style>
+
+    <style name="TabText">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/graphik_family</item>
+        <item name="android:textFontWeight">600</item>
+    </style>
+
+    <style name="CountText">
+        <item name="android:textSize">24sp</item>
+        <item name="android:fontFamily">@font/graphik_family</item>
+        <item name="android:textFontWeight">800</item>
+    </style>
+
+    <style name="CountTextSmall">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/graphik_family</item>
+        <item name="android:textFontWeight">800</item>
+    </style>
+
+    <style name="ChipStyle" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:textAppearance">@style/TabText</item>
+        <item name="android:checkable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:layout_width">160dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:layout_height">56dp</item>
+    </style>
+
+</resources>
