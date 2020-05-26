@@ -4,12 +4,18 @@ import android.app.Application;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.covidtracker.model.Address;
+import com.example.covidtracker.model.AddressResult;
+import com.example.covidtracker.model.ChartData;
 import com.example.covidtracker.model.DistrictResult;
 import com.example.covidtracker.model.DistrictWise;
 import com.example.covidtracker.model.StateResult;
+import com.example.covidtracker.model.StatesDaily;
+import com.example.covidtracker.model.StatesDailyResult;
 import com.example.covidtracker.model.Statewise;
 import com.example.covidtracker.service.DataService;
 import com.example.covidtracker.service.RetrofitInstance;
+import com.example.covidtracker.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +31,8 @@ public class Repository {
     private MutableLiveData<Statewise> statewiseMutableLiveData = new MutableLiveData<>();
     private List<DistrictWise> districtWiseList = new ArrayList<>();
     private MutableLiveData<DistrictWise> districtWiseMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<Address> addressMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<ChartData>> stateChartData = new MutableLiveData<>();
     private Application application;
 
     public Repository(Application application) {
@@ -32,7 +40,6 @@ public class Repository {
     }
 
     public MutableLiveData<Statewise> getStateData(final String state) {
-
         DataService dataService = RetrofitInstance.getService();
         Call<StateResult> call = dataService.getStateData();
         call.enqueue(new Callback<StateResult>() {
@@ -93,5 +100,56 @@ public class Repository {
             }
         });
         return districtWiseMutableLiveData;
+    }
+
+    public MutableLiveData<Address> getAddress(String url) {
+        Call<AddressResult> call = RetrofitInstance.getService().getAddress(url);
+        call.enqueue(new Callback<AddressResult>() {
+            @Override
+            public void onResponse(Call<AddressResult> call, Response<AddressResult> response) {
+                AddressResult addressResult = response.body();
+                if (addressResult != null && addressResult.getAddresses() != null) {
+                    if (!addressResult.getAddresses().isEmpty())
+                        addressMutableLiveData.setValue(addressResult.getAddresses().get(0));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddressResult> call, Throwable t) {
+
+            }
+        });
+        return addressMutableLiveData;
+    }
+
+    public MutableLiveData<List<ChartData>> getStateChartData(String state) {
+        final String stateCode = Util.stateCodes.get(state.toLowerCase());
+        if (stateCode != null) {
+            Call<StatesDailyResult> call = RetrofitInstance.getService().getDailyChangesState();
+            call.enqueue(new Callback<StatesDailyResult>() {
+                @Override
+                public void onResponse(Call<StatesDailyResult> call, Response<StatesDailyResult> response) {
+                    StatesDailyResult statesDailyResult = response.body();
+                    if (statesDailyResult != null && statesDailyResult.getStatesDaily() != null) {
+                        List<StatesDaily> statesDailyList = statesDailyResult.getStatesDaily();
+                        if (!statesDailyList.isEmpty()) {
+                            List<ChartData> chartDataList = new ArrayList<>();
+                            for (int i = statesDailyList.size() - 3; i >= statesDailyList.size() - 21; i -= 3) {
+                                chartDataList.add(new ChartData(Util.formatDateForState(statesDailyList.get(i).getDate()),
+                                        Util.getCasesForStateCode(stateCode, statesDailyList.get(i))));
+                            }
+                            Collections.reverse(chartDataList);
+                            stateChartData.setValue(chartDataList);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<StatesDailyResult> call, Throwable t) {
+
+                }
+            });
+        }
+        return stateChartData;
     }
 }

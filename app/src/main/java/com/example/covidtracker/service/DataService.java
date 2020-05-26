@@ -1,12 +1,16 @@
 package com.example.covidtracker.service;
 
+import com.example.covidtracker.model.AddressResult;
+import com.example.covidtracker.model.DistrictDailyResult;
 import com.example.covidtracker.model.DistrictResult;
 import com.example.covidtracker.model.StateResult;
+import com.example.covidtracker.model.StatesDailyResult;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Url;
 
 public interface DataService {
     @GET("data.json")
@@ -14,4 +18,13 @@ public interface DataService {
 
     @GET("v2/state_district_wise.json")
     Call<List<DistrictResult>> getDistrictData();
+
+    @GET
+    Call<AddressResult> getAddress(@Url String url);
+
+    @GET("states_daily.json")
+    Call<StatesDailyResult> getDailyChangesState();
+
+    @GET("districts_daily.json")
+    Call<DistrictDailyResult> getDailyChangesDistrict();
 }

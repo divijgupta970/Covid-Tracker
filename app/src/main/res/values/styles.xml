@@ -8,7 +8,6 @@
     </style>
 
     <style name="HeaderText">
-        <item name="android:textColor">@color/textOnBackground</item>
         <item name="android:textSize">20sp</item>
         <item name="android:fontFamily">@font/graphik_family</item>
         <item name="android:textFontWeight">600</item>

@@ -11,5 +11,5 @@
     <color name="white">#ffffff</color>
     <color name="chip_bg_purple">#6C65AC</color>
     <color name="blue">#4DB5FF</color>
-
+    <color name="chartTextColor">#999FBF</color>
 </resources>
