@@ -15,7 +15,12 @@ import com.example.covidtracker.model.StatesDailyResult;
 import com.example.covidtracker.model.Statewise;
 import com.example.covidtracker.service.DataService;
 import com.example.covidtracker.service.RetrofitInstance;
+import com.example.covidtracker.service.ScalarRetrofitInstance;
 import com.example.covidtracker.util.Util;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +38,7 @@ public class Repository {
     private MutableLiveData<DistrictWise> districtWiseMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Address> addressMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<ChartData>> stateChartData = new MutableLiveData<>();
+    private MutableLiveData<List<ChartData>> districtChartData = new MutableLiveData<>();
     private Application application;
 
     public Repository(Application application) {
@@ -152,4 +158,46 @@ public class Repository {
         }
         return stateChartData;
     }
+
+    public MutableLiveData<List<ChartData>> getDistrictChartData(final String state, final String district) {
+        Call<String> call = ScalarRetrofitInstance.getService().getDailyChangesDistrict();
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                String jsonString = response.body();
+                if (jsonString != null && !jsonString.isEmpty()) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(jsonString);
+                        JSONObject jsonDistrictDaily = jsonObject.getJSONObject("districtsDaily");
+                        JSONObject stateObj = (JSONObject) Util.getIgnoreCase(jsonDistrictDaily, state);
+                        if (stateObj != null) {
+                            JSONArray districtArray = (JSONArray) Util.getIgnoreCase(stateObj, district);
+                            if (districtArray != null) {
+                                List<ChartData> chartDataList = new ArrayList<>();
+                                JSONObject prevObj = districtArray.getJSONObject(districtArray.length() - 1);
+                                for (int i = districtArray.length() - 2; i >= districtArray.length() - 8; i--) {
+                                    JSONObject currObj = districtArray.getJSONObject(i);
+                                    int newCases = Integer.parseInt(prevObj.getString("confirmed"))
+                                            - Integer.parseInt(currObj.getString("confirmed"));
+                                    chartDataList.add(new ChartData(Util.formatDateForDistrict(prevObj.getString("date")), newCases));
+                                    prevObj = currObj;
+                                }
+                                Collections.reverse(chartDataList);
+                                districtChartData.setValue(chartDataList);
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+        return districtChartData;
+    }
+
 }

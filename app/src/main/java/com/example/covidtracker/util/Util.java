@@ -5,7 +5,15 @@ import com.example.covidtracker.model.StatesDaily;
 import com.example.covidtracker.model.Statewise;
 import com.example.covidtracker.model.StatisticsData;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -109,13 +117,46 @@ public class Util {
         return 0;
     }
 
-    public static String formatDateForState(String date) {
-        StringBuilder sb = new StringBuilder(date);
-        sb.deleteCharAt(2);
-        sb.insert(2, ' ');
-        sb.delete(6, sb.length());
-        if (sb.charAt(0) == '0')
-            sb.deleteCharAt(0);
-        return sb.toString();
+    public static String formatDateForState(String dateStr) {
+        try {
+            DateFormat srcDf = new SimpleDateFormat("dd-MMM-yy");
+            Date date = srcDf.parse(dateStr);
+            DateFormat destDf = new SimpleDateFormat("d MMM");
+            dateStr = destDf.format(date);
+            return dateStr;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String formatDateForDistrict(String dateStr) {
+        try {
+            DateFormat srcDf = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = srcDf.parse(dateStr);
+            DateFormat destDf = new SimpleDateFormat("d MMM");
+            dateStr = destDf.format(date);
+            return dateStr;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Object getIgnoreCase(JSONObject jobj, String key) {
+
+        Iterator<String> iter = jobj.keys();
+        while (iter.hasNext()) {
+            String key1 = iter.next();
+            if (key1.equalsIgnoreCase(key)) {
+                try {
+                    return jobj.get(key1);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+
     }
 }

@@ -5,7 +5,6 @@
     tools:context=".ui.StatisticsFragment">
 
     <data>
-
         <variable
             name="stats"
             type="com.example.covidtracker.model.StatisticsData" />

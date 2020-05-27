@@ -20,6 +20,7 @@ public class MainActivityViewModel extends AndroidViewModel {
     private LiveData<Statewise> countryData;
     private LiveData<DistrictWise> districtWiseData;
     private LiveData<List<ChartData>> stateChartData;
+    private LiveData<List<ChartData>> districtChartData;
 
 
     public MainActivityViewModel(@NonNull Application application) {
@@ -61,6 +62,13 @@ public class MainActivityViewModel extends AndroidViewModel {
             stateChartData = repository.getStateChartData(state);
         }
         return stateChartData;
+    }
+
+    public LiveData<List<ChartData>> getDistrictChartData(String state, String district, boolean isRefresh) {
+        if (districtChartData == null || isRefresh) {
+            districtChartData = repository.getDistrictChartData(state, district);
+        }
+        return districtChartData;
     }
 
 

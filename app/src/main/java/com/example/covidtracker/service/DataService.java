@@ -1,7 +1,6 @@
 package com.example.covidtracker.service;
 
 import com.example.covidtracker.model.AddressResult;
-import com.example.covidtracker.model.DistrictDailyResult;
 import com.example.covidtracker.model.DistrictResult;
 import com.example.covidtracker.model.StateResult;
 import com.example.covidtracker.model.StatesDailyResult;
@@ -25,6 +24,4 @@ public interface DataService {
     @GET("states_daily.json")
     Call<StatesDailyResult> getDailyChangesState();
 
-    @GET("districts_daily.json")
-    Call<DistrictDailyResult> getDailyChangesDistrict();
 }

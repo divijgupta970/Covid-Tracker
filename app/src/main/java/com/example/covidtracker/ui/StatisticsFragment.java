@@ -53,6 +53,8 @@ public class StatisticsFragment extends Fragment {
     private FragmentStatisticsBinding binding;
     private ProgressBar progressBar, pbChart;
     private BarChart barChart;
+    private List<ChartData> districtChartData;
+    private List<ChartData> stateChartData;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,10 +79,12 @@ public class StatisticsFragment extends Fragment {
                 switch (checkedId) {
                     case R.id.chipDistrict:
                         binding.setStats(districtData);
+                        setupChart(districtChartData);
                         curr = Constants.DISTRICT_DATA;
                         break;
                     case R.id.chipState:
                         binding.setStats(stateData);
+                        setupChart(stateChartData);
                         curr = Constants.STATE_DATA;
                 }
             }
@@ -125,7 +129,9 @@ public class StatisticsFragment extends Fragment {
         viewModel.getStateChartData(s, false).observe(getActivity(), new Observer<List<ChartData>>() {
             @Override
             public void onChanged(List<ChartData> chartDataList) {
-                setupChart(chartDataList);
+                stateChartData = chartDataList;
+                if (curr.equals(Constants.STATE_DATA))
+                    setupChart(stateChartData);
             }
         });
     }
@@ -140,31 +146,42 @@ public class StatisticsFragment extends Fragment {
                 progressBar.setVisibility(View.INVISIBLE);
             }
         });
+
+        viewModel.getDistrictChartData(state, district, false).observe(getActivity(), new Observer<List<ChartData>>() {
+            @Override
+            public void onChanged(List<ChartData> chartDataList) {
+                districtChartData = chartDataList;
+                if (curr.equals(Constants.DISTRICT_DATA))
+                    setupChart(districtChartData);
+            }
+        });
     }
 
     private void setupChart(List<ChartData> chartDataList) {
-        final String[] dates = new String[chartDataList.size()];
-        ArrayList<BarEntry> values = new ArrayList<>();
-        for (int i = 0; i < chartDataList.size(); i++) {
-            dates[i] = chartDataList.get(i).getDate();
-            values.add(new BarEntry((float) i, (float) chartDataList.get(i).getValue()));
-        }
-        BarDataSet dataSet = new BarDataSet(values, "Number of cases");
-        dataSet.setColor(Color.parseColor("#FF5959"));
-        BarData barData = new BarData(dataSet);
-        barData.setDrawValues(false);
-        barData.setBarWidth(0.25f);
-        ValueFormatter formatter = new ValueFormatter() {
-            @Override
-            public String getAxisLabel(float value, AxisBase axis) {
-                return dates[(int) value];
+        if (chartDataList != null) {
+            final String[] dates = new String[chartDataList.size()];
+            ArrayList<BarEntry> values = new ArrayList<>();
+            for (int i = 0; i < chartDataList.size(); i++) {
+                dates[i] = chartDataList.get(i).getDate();
+                values.add(new BarEntry((float) i, (float) chartDataList.get(i).getValue()));
             }
-        };
-        barChart.getXAxis().setValueFormatter(formatter);
-        barChart.setData(barData);
-        barChart.invalidate();
-        barChart.animateY(1000, Easing.EaseOutCirc);
-        pbChart.setVisibility(View.INVISIBLE);
+            BarDataSet dataSet = new BarDataSet(values, "Number of cases");
+            dataSet.setColor(Color.parseColor("#FF5959"));
+            BarData barData = new BarData(dataSet);
+            barData.setDrawValues(false);
+            barData.setBarWidth(0.25f);
+            ValueFormatter formatter = new ValueFormatter() {
+                @Override
+                public String getAxisLabel(float value, AxisBase axis) {
+                    return dates[(int) value];
+                }
+            };
+            barChart.getXAxis().setValueFormatter(formatter);
+            barChart.setData(barData);
+            barChart.invalidate();
+            barChart.animateY(1000, Easing.EaseOutCirc);
+            pbChart.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void formatBarChart() {
