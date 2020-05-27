@@ -3,7 +3,6 @@ package com.example.covidtracker.service;
 import com.example.covidtracker.model.AddressResult;
 import com.example.covidtracker.model.DistrictResult;
 import com.example.covidtracker.model.StateResult;
-import com.example.covidtracker.model.StatesDailyResult;
 
 import java.util.List;
 
@@ -20,8 +19,5 @@ public interface DataService {
 
     @GET
     Call<AddressResult> getAddress(@Url String url);
-
-    @GET("states_daily.json")
-    Call<StatesDailyResult> getDailyChangesState();
 
 }

@@ -1,7 +1,6 @@
 package com.example.covidtracker.util;
 
 import com.example.covidtracker.model.DistrictWise;
-import com.example.covidtracker.model.StatesDaily;
 import com.example.covidtracker.model.Statewise;
 import com.example.covidtracker.model.StatisticsData;
 
@@ -105,16 +104,6 @@ public class Util {
         long truncated = value / (divideBy / 10); //the number part of the output times 10
         boolean hasDecimal = truncated < 100 && (truncated / 10d) != (truncated / 10);
         return hasDecimal ? (truncated / 10d) + suffix : (truncated / 10) + suffix;
-    }
-
-    public static int getCasesForStateCode(String stateCode, StatesDaily statesDaily) {
-        switch (stateCode) {
-            case "jk":
-                return Integer.parseInt(statesDaily.getJk());
-            case "pb":
-                return Integer.parseInt(statesDaily.getPb());
-        }
-        return 0;
     }
 
     public static String formatDateForState(String dateStr) {

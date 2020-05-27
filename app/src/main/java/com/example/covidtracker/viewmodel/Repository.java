@@ -10,8 +10,6 @@ import com.example.covidtracker.model.ChartData;
 import com.example.covidtracker.model.DistrictResult;
 import com.example.covidtracker.model.DistrictWise;
 import com.example.covidtracker.model.StateResult;
-import com.example.covidtracker.model.StatesDaily;
-import com.example.covidtracker.model.StatesDailyResult;
 import com.example.covidtracker.model.Statewise;
 import com.example.covidtracker.service.DataService;
 import com.example.covidtracker.service.RetrofitInstance;
@@ -87,12 +85,7 @@ public class Repository {
                     int ind = Collections.binarySearch(districtResultList, new DistrictResult(state), c);
                     if (ind >= 0) {
                         districtWiseList = districtResultList.get(ind).getDistrictData();
-                        Comparator<DistrictWise> c2 = new Comparator<DistrictWise>() {
-                            @Override
-                            public int compare(DistrictWise o1, DistrictWise o2) {
-                                return o1.getDistrict().toLowerCase().compareTo(o2.getDistrict().toLowerCase());
-                            }
-                        };
+                        Comparator<DistrictWise> c2 = (o1, o2) -> o1.getDistrict().toLowerCase().compareTo(o2.getDistrict().toLowerCase());
                         int distInd = Collections.binarySearch(districtWiseList, new DistrictWise(district), c2);
                         if (distInd >= 0)
                             districtWiseMutableLiveData.setValue(districtWiseList.get(distInd));
@@ -128,30 +121,35 @@ public class Repository {
         return addressMutableLiveData;
     }
 
+
     public MutableLiveData<List<ChartData>> getStateChartData(String state) {
-        final String stateCode = Util.stateCodes.get(state.toLowerCase());
+        String stateCode = Util.stateCodes.get(state.toLowerCase());
         if (stateCode != null) {
-            Call<StatesDailyResult> call = RetrofitInstance.getService().getDailyChangesState();
-            call.enqueue(new Callback<StatesDailyResult>() {
+            Call<String> call = ScalarRetrofitInstance.getService().getDailyChangesState();
+            call.enqueue(new Callback<String>() {
                 @Override
-                public void onResponse(Call<StatesDailyResult> call, Response<StatesDailyResult> response) {
-                    StatesDailyResult statesDailyResult = response.body();
-                    if (statesDailyResult != null && statesDailyResult.getStatesDaily() != null) {
-                        List<StatesDaily> statesDailyList = statesDailyResult.getStatesDaily();
-                        if (!statesDailyList.isEmpty()) {
+                public void onResponse(Call<String> call, Response<String> response) {
+                    String jsonString = response.body();
+                    if (jsonString != null && !jsonString.isEmpty()) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(jsonString);
+                            JSONArray states_daily = jsonObject.getJSONArray("states_daily");
                             List<ChartData> chartDataList = new ArrayList<>();
-                            for (int i = statesDailyList.size() - 3; i >= statesDailyList.size() - 21; i -= 3) {
-                                chartDataList.add(new ChartData(Util.formatDateForState(statesDailyList.get(i).getDate()),
-                                        Util.getCasesForStateCode(stateCode, statesDailyList.get(i))));
+                            for (int i = states_daily.length() - 3; i >= states_daily.length() - 21; i -= 3) {
+                                JSONObject tempObj = states_daily.getJSONObject(i);
+                                chartDataList.add(new ChartData(Util.formatDateForState(tempObj.getString("date")),
+                                        Integer.parseInt(tempObj.getString(stateCode))));
                             }
                             Collections.reverse(chartDataList);
                             stateChartData.setValue(chartDataList);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
 
                 @Override
-                public void onFailure(Call<StatesDailyResult> call, Throwable t) {
+                public void onFailure(Call<String> call, Throwable t) {
 
                 }
             });
