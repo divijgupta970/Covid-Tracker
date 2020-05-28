@@ -154,7 +154,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/margin_sides"
             android:layout_marginEnd="@dimen/margin_sides"
-            app:cardBackgroundColor="@color/chip_bg_purple"
+            app:cardBackgroundColor="@color/colorAccent"
             app:cardCornerRadius="@dimen/card_corner_radius"
             app:layout_constraintDimensionRatio="155:100"
             app:layout_constraintEnd_toEndOf="parent"

@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+def apikeyPropertiesFile = rootProject.file("apikey.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
 
 android {
     compileSdkVersion 29
@@ -10,7 +13,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
+        buildConfigField("String", "apikey", apikeyProperties['apikey'])
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

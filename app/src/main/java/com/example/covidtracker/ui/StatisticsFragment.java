@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.covidtracker.BuildConfig;
 import com.example.covidtracker.R;
 import com.example.covidtracker.databinding.FragmentStatisticsBinding;
 import com.example.covidtracker.model.Address;
@@ -104,7 +105,7 @@ public class StatisticsFragment extends Fragment {
     }
 
     public void getAddressForLocation(Location location) {
-        StringBuilder sb = new StringBuilder("https://apis.mapmyindia.com/advancedmaps/v1/nrssvrwrpaz6u5ac9m929v6qgs7edebz/rev_geocode?lat=").append(location.getLatitude()).append("&lng=").append(location.getLongitude());
+        StringBuilder sb = new StringBuilder("https://apis.mapmyindia.com/advancedmaps/v1/").append(BuildConfig.apikey).append("/rev_geocode?lat=").append(location.getLatitude()).append("&lng=").append(location.getLongitude());
         viewModel.getAddress(sb.toString(), false).observe(getActivity(), new Observer<Address>() {
             @Override
             public void onChanged(Address address) {
