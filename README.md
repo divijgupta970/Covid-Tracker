@@ -12,6 +12,7 @@
 - Auto detects district and state using device's current location.
 - Daily new cases in last 7 days for both state and district.
 - Total active, confirmed, recovered and deaths in both state and district.
+- Offline caching.
 <br/>
 <br/> 
 
