@@ -44,7 +44,7 @@ public class Repository {
     }
 
     public MutableLiveData<Statewise> getStateData(final String state) {
-        DataService dataService = RetrofitInstance.getService();
+        DataService dataService = RetrofitInstance.getService(application.getApplicationContext());
         Call<StateResult> call = dataService.getStateData();
         call.enqueue(new Callback<StateResult>() {
             @Override
@@ -69,7 +69,7 @@ public class Repository {
     }
 
     public MutableLiveData<DistrictWise> getDistrictData(final String state, final String district) {
-        DataService dataService = RetrofitInstance.getService();
+        DataService dataService = RetrofitInstance.getService(application.getApplicationContext());
         Call<List<DistrictResult>> call = dataService.getDistrictData();
         call.enqueue(new Callback<List<DistrictResult>>() {
             @Override
@@ -102,7 +102,7 @@ public class Repository {
     }
 
     public MutableLiveData<Address> getAddress(String url) {
-        Call<AddressResult> call = RetrofitInstance.getService().getAddress(url);
+        Call<AddressResult> call = RetrofitInstance.getService(application.getApplicationContext()).getAddress(url);
         call.enqueue(new Callback<AddressResult>() {
             @Override
             public void onResponse(Call<AddressResult> call, Response<AddressResult> response) {
@@ -125,7 +125,7 @@ public class Repository {
     public MutableLiveData<List<ChartData>> getStateChartData(String state) {
         String stateCode = Util.stateCodes.get(state.toLowerCase());
         if (stateCode != null) {
-            Call<String> call = ScalarRetrofitInstance.getService().getDailyChangesState();
+            Call<String> call = ScalarRetrofitInstance.getService(application.getApplicationContext()).getDailyChangesState();
             call.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
@@ -158,7 +158,7 @@ public class Repository {
     }
 
     public MutableLiveData<List<ChartData>> getDistrictChartData(final String state, final String district) {
-        Call<String> call = ScalarRetrofitInstance.getService().getDailyChangesDistrict();
+        Call<String> call = ScalarRetrofitInstance.getService(application.getApplicationContext()).getDailyChangesDistrict();
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

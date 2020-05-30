@@ -1,5 +1,8 @@
 package com.example.covidtracker.util;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+
 import com.example.covidtracker.model.DistrictWise;
 import com.example.covidtracker.model.Statewise;
 import com.example.covidtracker.model.StatisticsData;
@@ -7,6 +10,7 @@ import com.example.covidtracker.model.StatisticsData;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.InetAddress;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -147,5 +151,23 @@ public class Util {
         }
         return null;
 
+    }
+
+    public static boolean isNetworkConnected(Context context) {
+        context = context.getApplicationContext();
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+
+    }
+
+    public static boolean isInternetAvailable() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("google.com");
+            //You can replace it with your name
+            return !ipAddr.equals("");
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
